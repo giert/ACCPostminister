@@ -1,0 +1,8 @@
+.vs/*
+.vscode/*
+.idea/*
+
+debug
+debug.test
+
+*.bat
