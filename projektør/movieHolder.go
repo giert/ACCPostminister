@@ -6,7 +6,7 @@ type movieHolder struct {
 
 func (mh movieHolder) Print() (result string) {
 	for _, v := range mh.Movies {
-		result += v.Println() + "\n"
+		result += v.Print() + "\n"
 	}
 	return
 }

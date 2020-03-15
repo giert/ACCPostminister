@@ -8,7 +8,7 @@ type Entry interface {
 	Print() string
 }
 
-func (s Storage) listMovies() (result string) {
+func (s Storage) ListMovies() (result string) {
 	for _, v := range s.Data {
 		result += v.Print() + "\n"
 	}

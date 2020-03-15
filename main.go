@@ -1,21 +1,22 @@
 package main
 
 import (
+	"ACCPostminister/bot"
 	"log"
 )
 
 func main() {
-	session, err := startup()
+	session, err := bot.Startup()
 	if err != nil {
 		log.Fatal("While setting up bot:", err)
 	}
 
-	err = run(session)
+	err = bot.Run(session)
 	if err != nil {
 		log.Fatal("While running bot:", err)
 	}
 
-	err = shutdown(session)
+	err = bot.Shutdown(session)
 	if err != nil {
 		log.Fatal("While shutting down bot:", err)
 	}

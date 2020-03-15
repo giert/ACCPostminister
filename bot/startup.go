@@ -9,7 +9,7 @@ const (
 	token = "NjgxODYwMTg4MTA5NjY4MzU2.XlUmEg.rsw0ahyJsWCHz5Hh3j50UwDCGjw"
 )
 
-func startup() (*discordgo.Session, error) {
+func Startup() (*discordgo.Session, error) {
 	s, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return nil, errors.Wrap(err, "while creating Discord session")

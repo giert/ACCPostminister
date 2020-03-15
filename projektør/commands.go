@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func listMovies(m *discordgo.MessageCreate) string {
+func ListMovies(m *discordgo.MessageCreate) string {
 	s := datastore.Storage{
 		Data: map[string]datastore.Entry{
 			"Unstoppable":           movie{},
@@ -14,5 +14,5 @@ func listMovies(m *discordgo.MessageCreate) string {
 		},
 	}
 
-	return s.listMovies()
+	return s.ListMovies()
 }
