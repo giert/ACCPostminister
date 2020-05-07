@@ -12,6 +12,7 @@ var commands = map[string]func(*discordgo.MessageCreate) string{
 	"pong":              pong,
 	language.Help:       help,
 	language.ListMovies: projektør.ListMovies,
+	language.Role:       role,
 }
 
 func ping(m *discordgo.MessageCreate) string {
@@ -24,4 +25,8 @@ func pong(m *discordgo.MessageCreate) string {
 
 func help(m *discordgo.MessageCreate) string {
 	return "no"
+}
+
+func role(m *discordgo.MessageCreate) string {
+	return "role"
 }
