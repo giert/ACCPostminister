@@ -16,6 +16,8 @@ func Startup() (*discordgo.Session, error) {
 	}
 
 	s.AddHandler(messageCreate)
+	s.AddHandler(messageReactionAdd)
+	s.AddHandler(messageReactionRemove)
 
 	err = s.Open()
 	if err != nil {

@@ -8,11 +8,11 @@ import (
 )
 
 var commands = map[string]func(*discordgo.MessageCreate) string{
-	"ping":              ping,
-	"pong":              pong,
-	language.Help:       help,
-	language.ListMovies: projektør.ListMovies,
-	language.Role:       role,
+	"ping":               ping,
+	"pong":               pong,
+	language.Help:        help,
+	language.ListMovies:  projektør.ListMovies,
+	language.RoleCommand: role,
 }
 
 func ping(m *discordgo.MessageCreate) string {
@@ -28,5 +28,5 @@ func help(m *discordgo.MessageCreate) string {
 }
 
 func role(m *discordgo.MessageCreate) string {
-	return "role"
+	return language.RoleResponse
 }
