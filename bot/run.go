@@ -10,7 +10,6 @@ import (
 )
 
 var roleMessageID string
-var confirmationMessageID string
 
 func Run(s *discordgo.Session) error {
 	log.Printf("Bot is now running. Hello!\nPress CTRL-C to exit . . .\n")
@@ -29,11 +28,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	msg, err := s.ChannelMessageSend(m.ChannelID, commands[m.Content](m))
-	roleMessageID = msg.ID
-	err = s.MessageReactionAdd(m.ChannelID, msg.ID, "😃")
-	err = s.MessageReactionAdd(m.ChannelID, msg.ID, "🙂")
 	if err != nil {
-		return
+		log.Fatal(err)
+	}
+
+	err = effects[m.Content](s, msg)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -43,10 +44,10 @@ func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 		return
 	}
 
+	// set role
+
 	if r.MessageID == roleMessageID {
-		msg, _ := s.ChannelMessageSend(r.ChannelID, r.UserID+" added "+r.Emoji.Name)
-		s.ChannelMessageDelete(r.ChannelID, confirmationMessageID)
-		confirmationMessageID = msg.ID
+		confirm(s, r.ChannelID, r.UserID+" added "+r.Emoji.Name)
 	}
 }
 
@@ -56,7 +57,9 @@ func messageReactionRemove(s *discordgo.Session, r *discordgo.MessageReactionRem
 		return
 	}
 
-	msg, _ := s.ChannelMessageSend(r.ChannelID, r.UserID+" removed "+r.Emoji.Name)
-	s.ChannelMessageDelete(r.ChannelID, confirmationMessageID)
-	confirmationMessageID = msg.ID
+	//remove role
+
+	if r.MessageID == roleMessageID {
+		confirm(s, r.ChannelID, r.UserID+" removed "+r.Emoji.Name)
+	}
 }

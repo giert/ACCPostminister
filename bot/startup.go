@@ -1,16 +1,19 @@
 package bot
 
 import (
+	"io/ioutil"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/pkg/errors"
 )
 
-const (
-	token = "NjgxODYwMTg4MTA5NjY4MzU2.XlUmEg.rsw0ahyJsWCHz5Hh3j50UwDCGjw"
-)
-
 func Startup() (*discordgo.Session, error) {
-	s, err := discordgo.New("Bot " + token)
+	token, err := ioutil.ReadFile("token.txt")
+	if err != nil {
+		return nil, errors.Wrap(err, "while reading token from file")
+	}
+
+	s, err := discordgo.New("Bot " + string(token))
 	if err != nil {
 		return nil, errors.Wrap(err, "while creating Discord session")
 	}
