@@ -3,6 +3,7 @@ package bot
 import (
 	"ACCPostminister/language"
 	"ACCPostminister/projektør"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -29,5 +30,11 @@ func help(m *discordgo.MessageCreate) string {
 
 func role(m *discordgo.MessageCreate) string {
 	response := language.RoleResponse
+
+	for _, role := range roles {
+		rlstr := fmt.Sprintf("\n%s - %s", role.emoji, role.name)
+		response += rlstr
+	}
+
 	return response
 }
