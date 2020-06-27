@@ -28,5 +28,6 @@ func help(m *discordgo.MessageCreate) string {
 }
 
 func role(m *discordgo.MessageCreate) string {
-	return language.RoleResponse
+	response := language.RoleResponse
+	return response
 }

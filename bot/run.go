@@ -29,37 +29,33 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	msg, err := s.ChannelMessageSend(m.ChannelID, commands[m.Content](m))
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 	}
 
 	err = effects[m.Content](s, msg)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("while processing effects of command %s on channel %s: %v", m.Content, m.ChannelID, err)
 	}
 }
 
 func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
-	// Ignore all reactions created by the bot itself
-	if r.UserID == s.State.User.ID {
+	if r.MessageID != roleMessageID || r.UserID == s.State.User.ID {
 		return
 	}
 
-	// set role
-
-	if r.MessageID == roleMessageID {
-		confirm(s, r.ChannelID, r.UserID+" added "+r.Emoji.Name)
+	err := rolechange(s, r.MessageReaction, addRole)
+	if err != nil {
+		log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
 	}
 }
 
 func messageReactionRemove(s *discordgo.Session, r *discordgo.MessageReactionRemove) {
-	// Ignore all reactions removed by the bot itself
-	if r.UserID == s.State.User.ID {
+	if r.MessageID != roleMessageID || r.UserID == s.State.User.ID {
 		return
 	}
 
-	//remove role
-
-	if r.MessageID == roleMessageID {
-		confirm(s, r.ChannelID, r.UserID+" removed "+r.Emoji.Name)
+	err := rolechange(s, r.MessageReaction, removeRole)
+	if err != nil {
+		log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
 	}
 }
