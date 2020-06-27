@@ -27,14 +27,18 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	msg, err := s.ChannelMessageSend(m.ChannelID, commands[m.Content](m))
-	if err != nil {
-		log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
-	}
+	if command := commands[m.Content]; command != nil {
+		msg, err := s.ChannelMessageSend(m.ChannelID, command(m))
+		if err != nil {
+			log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
+		}
 
-	err = effects[m.Content](s, msg)
-	if err != nil {
-		log.Printf("while processing effects of command %s on channel %s: %v", m.Content, m.ChannelID, err)
+		if effect := effects[m.Content]; effect != nil {
+			err = effect(s, msg)
+			if err != nil {
+				log.Printf("while processing effects of command %s on channel %s: %v", m.Content, m.ChannelID, err)
+			}
+		}
 	}
 }
 
