@@ -2,7 +2,9 @@ package bot
 
 import (
 	"ACCPostminister/language"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/pkg/errors"
 
@@ -15,17 +17,22 @@ const (
 )
 
 var roles = []struct {
-	name  string
-	emoji string
-}{
-	{
-		"cool",
-		"😃",
-	},
-	{
-		"fake",
-		"🙂",
-	},
+	Name  string
+	Emoji string
+}{}
+
+func initRoles() error {
+	bytes, err := ioutil.ReadFile("roles.json")
+	if err != nil {
+		return errors.Wrap(err, "while reading json from file")
+	}
+
+	err = json.Unmarshal(bytes, &roles)
+	if err != nil {
+		return errors.Wrap(err, "while unmarshaling json")
+	}
+
+	return nil
 }
 
 func rolechange(s *discordgo.Session, r *discordgo.MessageReaction, action string) (err error) {
@@ -54,13 +61,13 @@ func rolechange(s *discordgo.Session, r *discordgo.MessageReaction, action strin
 
 func doRolechange(s *discordgo.Session, r *discordgo.MessageReaction, action func(guildID, userID, roleID string) error) (string, error) {
 	for _, role := range roles {
-		if role.emoji == r.Emoji.Name {
-			rl, err := getRole(s, r.GuildID, role.name)
+		if role.Emoji == r.Emoji.Name {
+			rl, err := getRole(s, r.GuildID, role.Name)
 			if err != nil {
 				return "", errors.Wrapf(err, "while finding role ID for reaction %s", r.Emoji.Name)
 			}
 
-			return role.name, action(r.GuildID, r.UserID, rl.ID)
+			return role.Name, action(r.GuildID, r.UserID, rl.ID)
 		}
 	}
 	return "", errors.New("role not found for reaction " + r.Emoji.Name)

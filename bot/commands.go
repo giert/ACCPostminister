@@ -32,7 +32,7 @@ func role(m *discordgo.MessageCreate) string {
 	response := language.RoleResponse
 
 	for _, role := range roles {
-		rlstr := fmt.Sprintf("\n%s - %s", role.emoji, role.name)
+		rlstr := fmt.Sprintf("\n%s - %s", role.Emoji, role.Name)
 		response += rlstr
 	}
 

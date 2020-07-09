@@ -15,9 +15,9 @@ func roleReactions(s *discordgo.Session, msg *discordgo.Message) error {
 	roleMessageID = msg.ID
 
 	for _, role := range roles {
-		err := s.MessageReactionAdd(msg.ChannelID, roleMessageID, role.emoji)
+		err := s.MessageReactionAdd(msg.ChannelID, roleMessageID, role.Emoji)
 		if err != nil {
-			return errors.Wrapf(err, "while adding %s to role message", role.emoji)
+			return errors.Wrapf(err, "while adding %s to role message", role.Emoji)
 		}
 	}
 
