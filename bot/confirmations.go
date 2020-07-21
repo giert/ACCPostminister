@@ -7,19 +7,19 @@ import (
 
 var confirmationMessageID string
 
-func confirm(s *discordgo.Session, channelID string, c string) error {
+func confirm(s *discordgo.Session, channelID string, c string) (*discordgo.Message, error) {
 	msg, err := s.ChannelMessageSend(channelID, c)
 	if err != nil {
-		return errors.Wrap(err, "while sending confirmation message")
+		return nil, errors.Wrap(err, "while sending confirmation message")
 	}
 
 	if confirmationMessageID != "" {
 		err = s.ChannelMessageDelete(channelID, confirmationMessageID)
 		if err != nil {
-			return errors.Wrapf(err, "while deleting message %s", confirmationMessageID)
+			return nil, errors.Wrapf(err, "while deleting message %s", confirmationMessageID)
 		}
 	}
 
 	confirmationMessageID = msg.ID
-	return nil
+	return msg, nil
 }

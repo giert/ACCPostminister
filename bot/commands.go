@@ -8,7 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var commands = map[string]func(*discordgo.MessageCreate) string{
+var commands = map[string]func(*discordgo.MessageCreate) (string, bool){
 	"ping":               ping,
 	"pong":               pong,
 	language.Help:        help,
@@ -16,19 +16,23 @@ var commands = map[string]func(*discordgo.MessageCreate) string{
 	language.RoleCommand: role,
 }
 
-func ping(m *discordgo.MessageCreate) string {
-	return "Pong!"
+func ping(m *discordgo.MessageCreate) (string, bool) {
+	return "Pong!", true
 }
 
-func pong(m *discordgo.MessageCreate) string {
-	return "Ping!"
+func pong(m *discordgo.MessageCreate) (string, bool) {
+	return "Ping!", true
 }
 
-func help(m *discordgo.MessageCreate) string {
-	return "no"
+func help(m *discordgo.MessageCreate) (string, bool) {
+	return "no", true
 }
 
-func role(m *discordgo.MessageCreate) string {
+func role(m *discordgo.MessageCreate) (string, bool) {
+	if roleMessageID != "" {
+		return language.RoleExistsError, true
+	}
+
 	response := language.RoleResponse
 
 	for _, role := range roles {
@@ -36,5 +40,5 @@ func role(m *discordgo.MessageCreate) string {
 		response += rlstr
 	}
 
-	return response
+	return response, false
 }

@@ -51,7 +51,7 @@ func rolechange(s *discordgo.Session, r *discordgo.MessageReaction, action strin
 		return
 	}
 
-	err = confirm(s, r.ChannelID, fmt.Sprintf(action, usr.User.Username, rl))
+	_, err = confirm(s, r.ChannelID, fmt.Sprintf(action, usr.User.Username, rl))
 	if err != nil {
 		return errors.Wrapf(err, "while changing roles for user %s", r.UserID)
 	}

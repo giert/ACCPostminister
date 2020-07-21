@@ -12,14 +12,15 @@ var effects = map[string]func(*discordgo.Session, *discordgo.Message) error{
 }
 
 func roleReactions(s *discordgo.Session, msg *discordgo.Message) error {
-	roleMessageID = msg.ID
+	if roleMessageID == "" {
+		roleMessageID = msg.ID
 
-	for _, role := range roles {
-		err := s.MessageReactionAdd(msg.ChannelID, roleMessageID, role.Emoji)
-		if err != nil {
-			return errors.Wrapf(err, "while adding %s to role message", role.Emoji)
+		for _, role := range roles {
+			err := s.MessageReactionAdd(msg.ChannelID, roleMessageID, role.Emoji)
+			if err != nil {
+				return errors.Wrapf(err, "while adding %s to role message", role.Emoji)
+			}
 		}
 	}
-
 	return nil
 }

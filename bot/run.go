@@ -28,7 +28,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if command := commands[m.Content]; command != nil {
-		msg, err := s.ChannelMessageSend(m.ChannelID, command(m))
+		resp, conf := command(m)
+		msg, err := messageSend(s, m, resp, conf)
 		if err != nil {
 			log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 		}
@@ -40,6 +41,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 	}
+}
+
+func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message string, isConfirmation bool) (*discordgo.Message, error) {
+	if isConfirmation {
+		return confirm(s, m.ChannelID, message)
+	}
+	return s.ChannelMessageSend(m.ChannelID, message)
 }
 
 func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
