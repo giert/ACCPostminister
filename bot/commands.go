@@ -29,7 +29,7 @@ func help(m *discordgo.MessageCreate) (string, bool) {
 }
 
 func role(m *discordgo.MessageCreate) (string, bool) {
-	if roleMessageID != "" {
+	if msgIDs.role != "" {
 		return language.RoleExistsError, true
 	}
 

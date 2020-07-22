@@ -1,5 +1,7 @@
 package language
 
+const RecievedEmoji = "👌"
+
 const ListMovies = "list movies"
 const Help = "help"
 
