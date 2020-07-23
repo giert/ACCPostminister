@@ -31,7 +31,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		log.Printf("while reacting to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 	}
 
-	// like after recieve, generalize th check if then
 	if command := commands[m.Content]; command != nil {
 		resp, conf := command(m)
 		msg, err := messageSend(s, m, resp, conf)
@@ -45,16 +44,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				log.Printf("while processing effects of command %s on channel %s: %v", m.Content, m.ChannelID, err)
 			}
 		}
-	}
 
-	if msgIDs.user != "" {
-		err = s.ChannelMessageDelete(m.ChannelID, msgIDs.user)
-		if err != nil {
-			log.Printf("while deleting message %s: %v", msgIDs.user, err)
+		if msgIDs.user != "" {
+			err = s.ChannelMessageDelete(m.ChannelID, msgIDs.user)
+			if err != nil {
+				log.Printf("while deleting message %s: %v", msgIDs.user, err)
+			}
 		}
-	}
 
-	msgIDs.user = m.ID
+		msgIDs.user = m.ID
+	}
 }
 
 func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message string, isConfirmation bool) (*discordgo.Message, error) {
