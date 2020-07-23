@@ -45,14 +45,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if msgIDs.user != "" {
-			err = s.ChannelMessageDelete(m.ChannelID, msgIDs.user)
+		if msgIDs.User != "" {
+			err = s.ChannelMessageDelete(m.ChannelID, msgIDs.User)
 			if err != nil {
-				log.Printf("while deleting message %s: %v", msgIDs.user, err)
+				log.Printf("while deleting message %s: %v", msgIDs.User, err)
 			}
 		}
 
-		msgIDs.user = m.ID
+		msgIDs.User = m.ID
 	}
 }
 
@@ -65,7 +65,7 @@ func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message strin
 }
 
 func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
-	if r.MessageID != msgIDs.role || r.UserID == s.State.User.ID {
+	if r.MessageID != msgIDs.Role || r.UserID == s.State.User.ID {
 		return
 	}
 
@@ -76,7 +76,7 @@ func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 }
 
 func messageReactionRemove(s *discordgo.Session, r *discordgo.MessageReactionRemove) {
-	if r.MessageID != msgIDs.role || r.UserID == s.State.User.ID {
+	if r.MessageID != msgIDs.Role || r.UserID == s.State.User.ID {
 		return
 	}
 

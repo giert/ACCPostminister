@@ -11,13 +11,13 @@ func confirm(s *discordgo.Session, channelID string, c string) (*discordgo.Messa
 		return nil, errors.Wrap(err, "while sending confirmation message")
 	}
 
-	if msgIDs.confirmation != "" {
-		err = s.ChannelMessageDelete(channelID, msgIDs.confirmation)
+	if msgIDs.Confirmation != "" {
+		err = s.ChannelMessageDelete(channelID, msgIDs.Confirmation)
 		if err != nil {
-			return nil, errors.Wrapf(err, "while deleting message %s", msgIDs.confirmation)
+			return nil, errors.Wrapf(err, "while deleting message %s", msgIDs.Confirmation)
 		}
 	}
 
-	msgIDs.confirmation = msg.ID
+	msgIDs.Confirmation = msg.ID
 	return msg, nil
 }

@@ -4,10 +4,22 @@ import (
 	"log"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/pkg/errors"
 )
 
 func Shutdown(s *discordgo.Session) error {
+	err := saveToFile(roles, rolefile)
+	if err != nil {
+		return errors.Wrap(err, "while saving roles")
+	}
+
+	err = saveToFile(msgIDs, messagefile)
+	if err != nil {
+		return errors.Wrap(err, "while saving message IDs")
+	}
+
 	s.Close()
-	log.Printf("Bot shutdown. Good bye!")
+
+	log.Println("Bot shutdown. Good bye!")
 	return nil
 }

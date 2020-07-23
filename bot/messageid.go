@@ -1,17 +1,32 @@
 package bot
 
-import "ACCPostminister/language"
+import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+
+	"github.com/pkg/errors"
+)
 
 type messageIDs struct {
-	role         string
-	confirmation string
-	user         string
+	Role         string
+	Confirmation string
+	User         string
 }
 
 var msgIDs messageIDs
 
-func getMessageID(message string) {
-	if message == language.RoleResponse {
-
+func findMessageIDs() error {
+	bytes, err := ioutil.ReadFile(messagefile)
+	if err != nil {
+		log.Printf("Error reading from %s\nContinuing...\n", messagefile)
+		return nil
 	}
+
+	err = json.Unmarshal(bytes, &msgIDs)
+	if err != nil {
+		return errors.Wrap(err, "while unmarshaling json")
+	}
+
+	return nil
 }

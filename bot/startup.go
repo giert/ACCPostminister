@@ -32,5 +32,10 @@ func Startup() (*discordgo.Session, error) {
 		return nil, errors.Wrap(err, "while initiating configured roles")
 	}
 
+	err = findMessageIDs()
+	if err != nil {
+		return nil, errors.Wrap(err, "while finding message IDs")
+	}
+
 	return s, nil
 }
