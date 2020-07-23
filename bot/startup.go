@@ -27,7 +27,7 @@ func Startup() (*discordgo.Session, error) {
 		return nil, errors.Wrap(err, "while opening connection")
 	}
 
-	err = initRoles()
+	err = readFromFile(&roles, rolefile)
 	if err != nil {
 		return nil, errors.Wrap(err, "while initiating configured roles")
 	}

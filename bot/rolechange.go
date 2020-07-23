@@ -2,10 +2,7 @@ package bot
 
 import (
 	"ACCPostminister/language"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
 
 	"github.com/pkg/errors"
 
@@ -21,35 +18,6 @@ var roles = []struct {
 	Name  string
 	Emoji string
 }{}
-
-func initRoles() error {
-	bytes, err := ioutil.ReadFile(rolefile)
-	if err != nil {
-		log.Printf("Error reading from %s, no roles configured\nContinuing...\n", rolefile)
-		return nil
-	}
-
-	err = json.Unmarshal(bytes, &roles)
-	if err != nil {
-		return errors.Wrap(err, "while unmarshaling json")
-	}
-
-	return nil
-}
-
-func saveRoles() error {
-	bytes, err := json.MarshalIndent(roles, "", "    ")
-	if err != nil {
-		return errors.Wrap(err, "while marshaling roles")
-	}
-
-	err = ioutil.WriteFile(rolefile, bytes, 0644)
-	if err != nil {
-		return errors.Wrapf(err, "while writing to file %s", rolefile)
-	}
-
-	return nil
-}
 
 func rolechange(s *discordgo.Session, r *discordgo.MessageReaction, action string) (err error) {
 	rl := ""
