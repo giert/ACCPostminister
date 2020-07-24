@@ -1,17 +1,11 @@
 package bot
 
 import (
-	"ACCPostminister/language"
 	"fmt"
 
 	"github.com/pkg/errors"
 
 	"github.com/bwmarrin/discordgo"
-)
-
-const (
-	addRole    = language.RoleConfirmAdd
-	removeRole = language.RoleConfirmRemove
 )
 
 var roles = []struct {
@@ -21,7 +15,7 @@ var roles = []struct {
 
 func rolechange(s *discordgo.Session, r *discordgo.MessageReaction, action string) (err error) {
 	rl := ""
-	if action == addRole {
+	if action == lang.Role.ConfirmAdd {
 		rl, err = doRolechange(s, r, s.GuildMemberRoleAdd)
 	} else {
 		rl, err = doRolechange(s, r, s.GuildMemberRoleRemove)

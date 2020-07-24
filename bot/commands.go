@@ -1,19 +1,18 @@
 package bot
 
 import (
-	"ACCPostminister/language"
 	"ACCPostminister/projektør"
 	"fmt"
 )
 
 var commands = map[string]func() (string, bool){
-	"ping":                     ping,
-	"pong":                     pong,
-	language.Help:              help,
-	language.BotChannelCommand: botChannel,
-	language.CleanseCommand:    cleanse,
-	language.ListMovies:        projektør.ListMovies,
-	language.RoleCommand:       role,
+	"ping":                  ping,
+	"pong":                  pong,
+	lang.Help.Command:       help,
+	lang.BotChannel.Command: botChannel,
+	lang.Cleanse.Command:    cleanse,
+	lang.Movies.Command:     projektør.ListMovies,
+	lang.Role.Command:       role,
 }
 
 func ping() (string, bool) {
@@ -29,22 +28,22 @@ func help() (string, bool) {
 }
 
 func botChannel() (string, bool) {
-	return language.BotChannelResponse, true
+	return lang.BotChannel.Response, true
 }
 
 func cleanse() (string, bool) {
 	if globalIDs.Botchannel == "" {
-		return language.BotChannelUnsetError, true
+		return lang.BotChannel.Error, true
 	}
-	return language.CleanseResponse, true
+	return lang.Cleanse.Response, true
 }
 
 func role() (string, bool) {
 	if globalIDs.Role != "" {
-		return language.RoleExistsError, true
+		return lang.Role.Error, true
 	}
 
-	response := language.RoleResponse
+	response := lang.Role.Response
 
 	for _, role := range roles {
 		rlstr := fmt.Sprintf("\n%s - %s", role.Emoji, role.Name)

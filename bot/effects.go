@@ -1,16 +1,14 @@
 package bot
 
 import (
-	"ACCPostminister/language"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/pkg/errors"
 )
 
 var effects = map[string]func(*discordgo.Session, *discordgo.Message) error{
-	language.BotChannelCommand: setBotChannel,
-	language.CleanseCommand:    cleansing,
-	language.RoleCommand:       roleReactions,
+	lang.BotChannel.Command: setBotChannel,
+	lang.Cleanse.Command:    cleansing,
+	lang.Role.Command:       roleReactions,
 }
 
 func setBotChannel(s *discordgo.Session, m *discordgo.Message) error {

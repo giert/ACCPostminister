@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"ACCPostminister/language"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -39,7 +38,7 @@ func findMessageIDs(s *discordgo.Session) error {
 	}
 
 	if globalIDs.Role == "" && globalIDs.Botchannel != "" {
-		globalIDs.Role, err = findMessageID(s, globalIDs.Botchannel, language.RoleResponse)
+		globalIDs.Role, err = findMessageID(s, globalIDs.Botchannel, lang.Role.Response)
 	}
 
 	return nil

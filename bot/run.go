@@ -10,6 +10,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var lang = language.Languages["english"]
+
 func Run(s *discordgo.Session) error {
 	log.Printf("Bot is now running. Hello!\nPress CTRL-C to exit . . .\n")
 
@@ -27,7 +29,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if command := commands[m.Content]; command != nil {
-		err := s.MessageReactionAdd(m.ChannelID, m.ID, language.RecievedEmoji)
+		err := s.MessageReactionAdd(m.ChannelID, m.ID, lang.Reaction)
 		if err != nil {
 			log.Printf("while reacting to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 		}
@@ -69,7 +71,7 @@ func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 		return
 	}
 
-	err := rolechange(s, r.MessageReaction, addRole)
+	err := rolechange(s, r.MessageReaction, lang.Role.ConfirmAdd)
 	if err != nil {
 		log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
 	}
@@ -80,7 +82,7 @@ func messageReactionRemove(s *discordgo.Session, r *discordgo.MessageReactionRem
 		return
 	}
 
-	err := rolechange(s, r.MessageReaction, removeRole)
+	err := rolechange(s, r.MessageReaction, lang.Role.ConfirmRemove)
 	if err != nil {
 		log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
 	}
