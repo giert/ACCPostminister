@@ -21,18 +21,18 @@ func Run(s *discordgo.Session) error {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// Ignore all messages created by the bot itself
-	if m.Author.ID == s.State.User.ID {
+	// Ignore all messages created by the bot itself, or outside the set botchannel
+	if m.Author.ID == s.State.User.ID || (globalIDs.Botchannel != "" && globalIDs.Botchannel != m.ChannelID) {
 		return
 	}
 
-	err := s.MessageReactionAdd(m.ChannelID, m.ID, language.RecievedEmoji)
-	if err != nil {
-		log.Printf("while reacting to command %s on channel %s: %v", m.Content, m.ChannelID, err)
-	}
-
 	if command := commands[m.Content]; command != nil {
-		resp, conf := command(m)
+		err := s.MessageReactionAdd(m.ChannelID, m.ID, language.RecievedEmoji)
+		if err != nil {
+			log.Printf("while reacting to command %s on channel %s: %v", m.Content, m.ChannelID, err)
+		}
+
+		resp, conf := command()
 		msg, err := messageSend(s, m, resp, conf)
 		if err != nil {
 			log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
@@ -45,14 +45,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if msgIDs.User != "" {
-			err = s.ChannelMessageDelete(m.ChannelID, msgIDs.User)
+		if globalIDs.User != "" {
+			err = s.ChannelMessageDelete(m.ChannelID, globalIDs.User)
 			if err != nil {
-				log.Printf("while deleting message %s: %v", msgIDs.User, err)
+				log.Printf("while deleting message %s: %v", globalIDs.User, err)
 			}
 		}
 
-		msgIDs.User = m.ID
+		globalIDs.User = m.ID
 	}
 }
 
@@ -65,7 +65,7 @@ func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message strin
 }
 
 func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
-	if r.MessageID != msgIDs.Role || r.UserID == s.State.User.ID {
+	if r.MessageID != globalIDs.Role || r.UserID == s.State.User.ID {
 		return
 	}
 
@@ -76,7 +76,7 @@ func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 }
 
 func messageReactionRemove(s *discordgo.Session, r *discordgo.MessageReactionRemove) {
-	if r.MessageID != msgIDs.Role || r.UserID == s.State.User.ID {
+	if r.MessageID != globalIDs.Role || r.UserID == s.State.User.ID {
 		return
 	}
 

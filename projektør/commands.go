@@ -2,11 +2,9 @@ package projektør
 
 import (
 	"ACCPostminister/datastore"
-
-	"github.com/bwmarrin/discordgo"
 )
 
-func ListMovies(m *discordgo.MessageCreate) (string, bool) {
+func ListMovies() (string, bool) {
 	s := datastore.Storage{
 		Data: map[string]datastore.Entry{
 			"Unstoppable":           movie{},

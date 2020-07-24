@@ -13,7 +13,7 @@ func Shutdown(s *discordgo.Session) error {
 		return errors.Wrap(err, "while saving roles")
 	}
 
-	err = saveToFile(msgIDs, messagefile)
+	err = saveToFile(globalIDs, messagefile)
 	if err != nil {
 		return errors.Wrap(err, "while saving message IDs")
 	}
