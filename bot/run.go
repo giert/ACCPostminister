@@ -24,7 +24,7 @@ func Run(s *discordgo.Session) error {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself, or outside the set botchannel
-	if m.Author.ID == s.State.User.ID || (validChannelID(globalIDs.Botchannel) && globalIDs.Botchannel != m.ChannelID) {
+	if m.Author.ID == s.State.User.ID || (validChannelID(s, globalIDs.Botchannel) && globalIDs.Botchannel != m.ChannelID) {
 		return
 	}
 
@@ -34,7 +34,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			log.Printf("while reacting to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 		}
 
-		resp, conf := command()
+		resp, conf := command(s, m)
 		msg, err := messageSend(s, m, resp, conf)
 		if err != nil {
 			log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
@@ -47,7 +47,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if validMessageID(globalIDs.User) {
+		if validMessageID(s, m.ChannelID, globalIDs.User) {
 			err = s.ChannelMessageDelete(m.ChannelID, globalIDs.User)
 			if err != nil {
 				log.Printf("while deleting message %s: %v", globalIDs.User, err)

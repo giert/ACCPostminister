@@ -40,15 +40,17 @@ func (ids IDs) init(s *discordgo.Session) error {
 		return errors.Wrap(err, "reading messages from file")
 	}
 
-	if !validMessageID(ids.Role) && validChannelID(ids.Botchannel) { // MOVE TO FUNC
-		ids.Role, err = findMessageID(s, ids.Botchannel, lang.Role.Response)
-	}
-
-	if !validMessageID(ids.Role) && validChannelID(ids.Botchannel) { // HELP
-		ids.Role, err = findMessageID(s, ids.Botchannel, lang.Role.Response)
-	}
+	err = ids.ensureMessageID(s, lang.Help.Response, &ids.Help)
+	err = ids.ensureMessageID(s, lang.Role.Response, &ids.Role)
 
 	return nil
+}
+
+func (ids IDs) ensureMessageID(s *discordgo.Session, message string, messageID *string) (err error) {
+	if validChannelID(s, ids.Botchannel) && !validMessageID(s, ids.Botchannel, *messageID) {
+		*messageID, err = findMessageID(s, ids.Botchannel, message)
+	}
+	return
 }
 
 func findMessageID(s *discordgo.Session, channelID, partialMessage string) (string, error) {
@@ -67,18 +69,20 @@ func findMessageID(s *discordgo.Session, channelID, partialMessage string) (stri
 }
 
 // is not empty and actually exists
-func validMessageID(messageID string) bool {
-	return messageID != ""
+func validMessageID(s *discordgo.Session, channelID, messageID string) bool {
+	msg, err := s.ChannelMessage(channelID, messageID)
+	return messageID != "" || msg != nil || err == nil
 }
 
-func validChannelID(channelID string) bool {
-	return channelID != ""
+func validChannelID(s *discordgo.Session, channelID string) bool {
+	ch, err := s.Channel(channelID)
+	return channelID != "" || ch != nil || err == nil
 }
 
 func botchannelHelpMessage() {
-	if !validChannelID(globalIDs.Botchannel) || validMessageID(globalIDs.Help) {
-		return
-	}
+	//if !validChannelID(globalIDs.Botchannel) || validMessageID(globalIDs.Help) {
+	//	return
+	//}
 
 	//send
 	//pin

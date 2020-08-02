@@ -15,7 +15,7 @@ var english = Language{
 		Command:  "cleanse",
 		Help:     " - delete all irrelevant messages from the bot channel",
 		Response: "Cleansing messages from bot channel",
-		Error:    "Bot channel not set",
+		Error:    "Bot channel not set or invalid",
 	},
 	Role: RoleFeature{
 		Feature: Feature{

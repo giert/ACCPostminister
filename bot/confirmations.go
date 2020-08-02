@@ -11,7 +11,7 @@ func confirm(s *discordgo.Session, channelID string, c string) (*discordgo.Messa
 		return nil, errors.Wrap(err, "while sending confirmation message")
 	}
 
-	if validMessageID(globalIDs.Confirmation) {
+	if validMessageID(s, channelID, globalIDs.Confirmation) {
 		err = s.ChannelMessageDelete(channelID, globalIDs.Confirmation)
 		if err != nil {
 			return nil, errors.Wrapf(err, "while deleting message %s", globalIDs.Confirmation)

@@ -17,7 +17,7 @@ func setBotChannel(s *discordgo.Session, m *discordgo.Message) error {
 }
 
 func cleansing(s *discordgo.Session, m *discordgo.Message) error {
-	if !validChannelID(globalIDs.Botchannel) {
+	if !validChannelID(s, globalIDs.Botchannel) {
 		return nil
 	}
 
@@ -39,7 +39,7 @@ func cleansing(s *discordgo.Session, m *discordgo.Message) error {
 }
 
 func roleReactions(s *discordgo.Session, m *discordgo.Message) error {
-	if !validMessageID(globalIDs.Role) {
+	if !validMessageID(s, m.ChannelID, globalIDs.Role) {
 		globalIDs.Role = m.ID
 
 		for _, role := range roles {
