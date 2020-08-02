@@ -7,22 +7,25 @@ import (
 	"github.com/pkg/errors"
 )
 
-type importantIDs struct {
+type IDs struct {
 	Botchannel   string
 	Confirmation string
 	User         string
+	Help         string
 	Role         string
 }
 
-var globalIDs importantIDs
+var globalIDs IDs
 
-func (ids importantIDs) contains(messageID string) bool {
+func (ids IDs) contains(messageID string) bool {
 	switch messageID {
 	case ids.Botchannel:
 		return true
 	case ids.Confirmation:
 		return true
 	case ids.User:
+		return true
+	case ids.Help:
 		return true
 	case ids.Role:
 		return true
@@ -31,14 +34,18 @@ func (ids importantIDs) contains(messageID string) bool {
 	}
 }
 
-func findMessageIDs(s *discordgo.Session) error {
-	err := readFromFile(&globalIDs, messagefile)
+func (ids IDs) init(s *discordgo.Session) error {
+	err := readFromFile(&ids, messagefile)
 	if err != nil {
 		return errors.Wrap(err, "reading messages from file")
 	}
 
-	if globalIDs.Role == "" && globalIDs.Botchannel != "" {
-		globalIDs.Role, err = findMessageID(s, globalIDs.Botchannel, lang.Role.Response)
+	if !validMessageID(ids.Role) && validChannelID(ids.Botchannel) { // MOVE TO FUNC
+		ids.Role, err = findMessageID(s, ids.Botchannel, lang.Role.Response)
+	}
+
+	if !validMessageID(ids.Role) && validChannelID(ids.Botchannel) { // HELP
+		ids.Role, err = findMessageID(s, ids.Botchannel, lang.Role.Response)
 	}
 
 	return nil
@@ -57,4 +64,24 @@ func findMessageID(s *discordgo.Session, channelID, partialMessage string) (stri
 	}
 
 	return "", nil
+}
+
+// is not empty and actually exists
+func validMessageID(messageID string) bool {
+	return messageID != ""
+}
+
+func validChannelID(channelID string) bool {
+	return channelID != ""
+}
+
+func botchannelHelpMessage() {
+	if !validChannelID(globalIDs.Botchannel) || validMessageID(globalIDs.Help) {
+		return
+	}
+
+	//send
+	//pin
+	//save
+	//add startup search
 }

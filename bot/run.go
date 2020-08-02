@@ -10,7 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var lang = language.Languages["english"]
+var lang = language.Languages["English"]
 
 func Run(s *discordgo.Session) error {
 	log.Printf("Bot is now running. Hello!\nPress CTRL-C to exit . . .\n")
@@ -24,7 +24,7 @@ func Run(s *discordgo.Session) error {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself, or outside the set botchannel
-	if m.Author.ID == s.State.User.ID || (globalIDs.Botchannel != "" && globalIDs.Botchannel != m.ChannelID) {
+	if m.Author.ID == s.State.User.ID || (validChannelID(globalIDs.Botchannel) && globalIDs.Botchannel != m.ChannelID) {
 		return
 	}
 
@@ -47,7 +47,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if globalIDs.User != "" {
+		if validMessageID(globalIDs.User) {
 			err = s.ChannelMessageDelete(m.ChannelID, globalIDs.User)
 			if err != nil {
 				log.Printf("while deleting message %s: %v", globalIDs.User, err)

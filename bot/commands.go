@@ -24,7 +24,7 @@ func pong() (string, bool) {
 }
 
 func help() (string, bool) {
-	return "no", true
+	return lang.Help.Response + lang.GetHelpStrings(), true
 }
 
 func botChannel() (string, bool) {
@@ -32,14 +32,14 @@ func botChannel() (string, bool) {
 }
 
 func cleanse() (string, bool) {
-	if globalIDs.Botchannel == "" {
+	if !validChannelID(globalIDs.Botchannel) {
 		return lang.BotChannel.Error, true
 	}
 	return lang.Cleanse.Response, true
 }
 
 func role() (string, bool) {
-	if globalIDs.Role != "" {
+	if validMessageID(globalIDs.Role) {
 		return lang.Role.Error, true
 	}
 

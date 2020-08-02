@@ -25,3 +25,19 @@ type RoleFeature struct {
 	ConfirmAdd    string
 	ConfirmRemove string
 }
+
+func (l Language) GetHelpStrings() (result string) {
+	result += getHelpString(l.Help)
+	result += getHelpString(l.BotChannel)
+	result += getHelpString(l.Cleanse)
+	result += getHelpString(l.Role.Feature)
+	result += getHelpString(l.Movies)
+	return
+}
+
+func getHelpString(feature Feature) string {
+	if feature.Help == "" {
+		return ""
+	}
+	return "\n" + feature.Command + feature.Help
+}

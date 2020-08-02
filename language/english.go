@@ -3,7 +3,8 @@ package language
 var english = Language{
 	Reaction: "👌",
 	Help: Feature{
-		Command: "help",
+		Command:  "help",
+		Response: "Instructions for use:",
 	},
 	BotChannel: Feature{
 		Command:  "botchannel",

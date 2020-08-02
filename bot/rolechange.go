@@ -13,6 +13,11 @@ var roles = []struct {
 	Emoji string
 }{}
 
+func initRoles(filename string) error {
+	err := readFromFile(&roles, filename)
+	return errors.Wrap(err, "while reading from file")
+}
+
 func rolechange(s *discordgo.Session, r *discordgo.MessageReaction, action string) (err error) {
 	rl := ""
 	if action == lang.Role.ConfirmAdd {

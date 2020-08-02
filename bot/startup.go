@@ -27,14 +27,14 @@ func Startup() (*discordgo.Session, error) {
 		return nil, errors.Wrap(err, "while opening connection")
 	}
 
-	err = readFromFile(&roles, rolefile)
+	err = initRoles(rolefile)
 	if err != nil {
 		return nil, errors.Wrap(err, "while initiating configured roles")
 	}
 
-	err = findMessageIDs(s)
+	err = globalIDs.init(s)
 	if err != nil {
-		return nil, errors.Wrap(err, "while finding message IDs")
+		return nil, errors.Wrap(err, "while initiating global IDs")
 	}
 
 	return s, nil
