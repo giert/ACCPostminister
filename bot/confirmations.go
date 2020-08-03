@@ -5,8 +5,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func confirm(s *discordgo.Session, channelID string, c string) (*discordgo.Message, error) {
-	msg, err := s.ChannelMessageSend(channelID, c)
+func confirm(s *discordgo.Session, channelID string, message string) (*discordgo.Message, error) {
+	msg, err := s.ChannelMessageSend(channelID, message)
 	if err != nil {
 		return nil, errors.Wrap(err, "while sending confirmation message")
 	}

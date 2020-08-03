@@ -34,7 +34,7 @@ func (ids IDs) contains(messageID string) bool {
 	}
 }
 
-func (ids IDs) init(s *discordgo.Session) error {
+func (ids *IDs) init(s *discordgo.Session) error {
 	err := readFromFile(&ids, messagefile)
 	if err != nil {
 		return errors.Wrap(err, "reading messages from file")
@@ -46,7 +46,7 @@ func (ids IDs) init(s *discordgo.Session) error {
 	return nil
 }
 
-func (ids IDs) ensureMessageID(s *discordgo.Session, message string, messageID *string) (err error) {
+func (ids *IDs) ensureMessageID(s *discordgo.Session, message string, messageID *string) (err error) {
 	if validChannelID(s, ids.Botchannel) && !validMessageID(s, ids.Botchannel, *messageID) {
 		*messageID, err = findMessageID(s, ids.Botchannel, message)
 	}
@@ -79,13 +79,37 @@ func validChannelID(s *discordgo.Session, channelID string) bool {
 	return channelID != "" || ch != nil || err == nil
 }
 
-func botchannelHelpMessage() {
-	//if !validChannelID(globalIDs.Botchannel) || validMessageID(globalIDs.Help) {
-	//	return
-	//}
+func botchannelHelpMessage(s *discordgo.Session) error {
+	if !validChannelID(s, globalIDs.Botchannel) || validMessageID(s, globalIDs.Botchannel, globalIDs.Help) {
+		return nil
+	}
 
-	//send
-	//pin
-	//save
-	//add startup search
+	message, err := s.ChannelMessageSend(globalIDs.Botchannel, lang.Help.Response+lang.GetHelpStrings()) // two occurences of lang+strings
+	if err != nil {
+		return err
+	}
+
+	err = s.ChannelMessagePin(globalIDs.Botchannel, message.ID)
+	if err != nil {
+		return err
+	}
+
+	globalIDs.Help = message.ID
+
+	return nil
+}
+
+func botchannelHelpMessageDelete(s *discordgo.Session) error {
+	if !validChannelID(s, globalIDs.Botchannel) || !validMessageID(s, globalIDs.Botchannel, globalIDs.Help) {
+		return nil
+	}
+
+	err := s.ChannelMessageDelete(globalIDs.Botchannel, globalIDs.Help)
+	if err != nil {
+		return err
+	}
+
+	globalIDs.Help = ""
+
+	return nil
 }

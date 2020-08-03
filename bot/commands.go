@@ -8,13 +8,14 @@ import (
 )
 
 var commands = map[string]func(s *discordgo.Session, m *discordgo.MessageCreate) (string, bool){
-	"ping":                  ping,
-	"pong":                  pong,
-	lang.Help.Command:       help,
-	lang.BotChannel.Command: botChannel,
-	lang.Cleanse.Command:    cleanse,
-	lang.Movies.Command:     projektør.ListMovies,
-	lang.Role.Command:       role,
+	"ping":                       ping,
+	"pong":                       pong,
+	lang.Help.Command:            help,
+	lang.BotChannel.Command:      botChannel,
+	lang.UnsetBotChannel.Command: unsetBotChannel,
+	lang.Cleanse.Command:         cleanse,
+	lang.Movies.Command:          projektør.ListMovies,
+	lang.Role.Command:            role,
 }
 
 func ping(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
@@ -31,6 +32,10 @@ func help(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
 
 func botChannel(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
 	return lang.BotChannel.Response, true
+}
+
+func unsetBotChannel(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
+	return lang.UnsetBotChannel.Response, true
 }
 
 func cleanse(s *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {

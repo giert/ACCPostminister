@@ -5,12 +5,13 @@ var Languages = map[string]Language{
 }
 
 type Language struct {
-	Reaction   string
-	Help       Feature
-	BotChannel Feature
-	Cleanse    Feature
-	Role       RoleFeature
-	Movies     Feature
+	Reaction        string
+	Help            Feature
+	BotChannel      Feature
+	UnsetBotChannel Feature
+	Cleanse         Feature
+	Role            RoleFeature
+	Movies          Feature
 }
 
 type Feature struct {
@@ -29,6 +30,7 @@ type RoleFeature struct {
 func (l Language) GetHelpStrings() (result string) {
 	result += getHelpString(l.Help)
 	result += getHelpString(l.BotChannel)
+	result += getHelpString(l.UnsetBotChannel)
 	result += getHelpString(l.Cleanse)
 	result += getHelpString(l.Role.Feature)
 	result += getHelpString(l.Movies)

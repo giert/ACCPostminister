@@ -7,9 +7,14 @@ var english = Language{
 		Response: "Instructions for use:",
 	},
 	BotChannel: Feature{
-		Command:  "botchannel",
+		Command:  "set botchannel",
 		Help:     " - assign current channel as the bot channel",
 		Response: "Bot channel set to current channel",
+	},
+	UnsetBotChannel: Feature{
+		Command:  "unset botchannel",
+		Help:     " - unassign current the bot channel",
+		Response: "Bot channel unset",
 	},
 	Cleanse: Feature{
 		Command:  "cleanse",

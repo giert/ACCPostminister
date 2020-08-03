@@ -6,14 +6,22 @@ import (
 )
 
 var effects = map[string]func(*discordgo.Session, *discordgo.Message) error{
-	lang.BotChannel.Command: setBotChannel,
-	lang.Cleanse.Command:    cleansing,
-	lang.Role.Command:       roleReactions,
+	lang.BotChannel.Command:      setBotchannel,
+	lang.UnsetBotChannel.Command: unsetBotchannel,
+	lang.Cleanse.Command:         cleansing,
+	lang.Role.Command:            roleReactions,
 }
 
-func setBotChannel(s *discordgo.Session, m *discordgo.Message) error {
+func setBotchannel(s *discordgo.Session, m *discordgo.Message) error {
 	globalIDs.Botchannel = m.ChannelID
-	return nil
+	err := botchannelHelpMessage(s)
+	return err
+}
+
+func unsetBotchannel(s *discordgo.Session, m *discordgo.Message) error {
+	err := botchannelHelpMessageDelete(s)
+	globalIDs.Botchannel = ""
+	return err
 }
 
 func cleansing(s *discordgo.Session, m *discordgo.Message) error {
