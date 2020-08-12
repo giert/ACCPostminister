@@ -7,48 +7,54 @@ import (
 	"github.com/pkg/errors"
 )
 
-type IDs struct {
+type persistentData struct {
+	Language     string
 	Botchannel   string
 	Confirmation string
 	User         string
 	Help         string
+	LangMSG      string
 	Role         string
 }
 
-var globalIDs IDs
+var persistent persistentData
 
-func (ids IDs) contains(messageID string) bool {
+func (p persistentData) contains(messageID string) bool {
 	switch messageID {
-	case ids.Botchannel:
+	case p.Language:
 		return true
-	case ids.Confirmation:
+	case p.Botchannel:
 		return true
-	case ids.User:
+	case p.Confirmation:
 		return true
-	case ids.Help:
+	case p.User:
 		return true
-	case ids.Role:
+	case p.Help:
+		return true
+	case p.LangMSG:
+		return true
+	case p.Role:
 		return true
 	default:
 		return false
 	}
 }
 
-func (ids *IDs) init(s *discordgo.Session) error {
-	err := readFromFile(&ids, messagefile)
+func (p *persistentData) init(s *discordgo.Session) error {
+	err := ReadFromFile(&p, messagefile)
 	if err != nil {
 		return errors.Wrap(err, "reading messages from file")
 	}
 
-	err = ids.ensureMessageID(s, lang.Help.Response, &ids.Help)
-	err = ids.ensureMessageID(s, lang.Role.Response, &ids.Role)
+	err = p.ensureMessageID(s, lang.Help.Response, &p.Help)
+	err = p.ensureMessageID(s, lang.Role.Response, &p.Role)
 
 	return nil
 }
 
-func (ids *IDs) ensureMessageID(s *discordgo.Session, message string, messageID *string) (err error) {
-	if validChannelID(s, ids.Botchannel) && !validMessageID(s, ids.Botchannel, *messageID) {
-		*messageID, err = findMessageID(s, ids.Botchannel, message)
+func (p *persistentData) ensureMessageID(s *discordgo.Session, message string, messageID *string) (err error) {
+	if validChannelID(s, p.Botchannel) && !validMessageID(s, p.Botchannel, *messageID) {
+		*messageID, err = findMessageID(s, p.Botchannel, message)
 	}
 	return
 }
@@ -80,36 +86,36 @@ func validChannelID(s *discordgo.Session, channelID string) bool {
 }
 
 func botchannelHelpMessage(s *discordgo.Session) error {
-	if !validChannelID(s, globalIDs.Botchannel) || validMessageID(s, globalIDs.Botchannel, globalIDs.Help) {
+	if !validChannelID(s, persistent.Botchannel) || validMessageID(s, persistent.Botchannel, persistent.Help) {
 		return nil
 	}
 
-	message, err := s.ChannelMessageSend(globalIDs.Botchannel, lang.Help.Response+lang.GetHelpStrings()) // two occurences of lang+strings
+	message, err := s.ChannelMessageSend(persistent.Botchannel, lang.Help.Response+lang.GetHelpStrings()) // two occurences of lang+strings
 	if err != nil {
 		return err
 	}
 
-	err = s.ChannelMessagePin(globalIDs.Botchannel, message.ID)
+	err = s.ChannelMessagePin(persistent.Botchannel, message.ID)
 	if err != nil {
 		return err
 	}
 
-	globalIDs.Help = message.ID
+	persistent.Help = message.ID
 
 	return nil
 }
 
 func botchannelHelpMessageDelete(s *discordgo.Session) error {
-	if !validChannelID(s, globalIDs.Botchannel) || !validMessageID(s, globalIDs.Botchannel, globalIDs.Help) {
+	if !validChannelID(s, persistent.Botchannel) || !validMessageID(s, persistent.Botchannel, persistent.Help) {
 		return nil
 	}
 
-	err := s.ChannelMessageDelete(globalIDs.Botchannel, globalIDs.Help)
+	err := s.ChannelMessageDelete(persistent.Botchannel, persistent.Help)
 	if err != nil {
 		return err
 	}
 
-	globalIDs.Help = ""
+	persistent.Help = ""
 
 	return nil
 }

@@ -14,7 +14,7 @@ var roles = []struct {
 }{}
 
 func initRoles(filename string) error {
-	err := readFromFile(&roles, filename)
+	err := ReadFromFile(&roles, filename)
 	return errors.Wrap(err, "while reading from file")
 }
 

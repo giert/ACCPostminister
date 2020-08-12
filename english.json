@@ -1,0 +1,48 @@
+{
+    "Reaction": "👌",
+    "Help": {
+        "Command": "help",
+        "Help": "",
+        "Response": "Instructions for use:",
+        "Error": ""
+    },
+    "BotChannel": {
+        "Command": "set botchannel",
+        "Help": " - assign current channel as the bot channel",
+        "Response": "Bot channel set to current channel",
+        "Error": ""
+    },
+    "UnsetBotChannel": {
+        "Command": "unset botchannel",
+        "Help": " - unassign current the bot channel",
+        "Response": "Bot channel unset",
+        "Error": ""
+    },
+    "Cleanse": {
+        "Command": "cleanse",
+        "Help": " - delete all irrelevant messages from the bot channel",
+        "Response": "Cleansing messages from bot channel",
+        "Error": "Bot channel not set or invalid"
+    },
+    "Language": {
+        "Command": "language",
+        "Help": " - change language setting for the Discord bot",
+        "Response": "Select language",
+        "Error": "",
+        "ConfirmChange": "Language changed to "
+    },
+    "Role": {
+        "Command": "role",
+        "Help": " - get role assignment message",
+        "Response": "React with corresponing emoji to toggle role assignment",
+        "Error": "Role message exists",
+        "ConfirmAdd": "%s added to role %s",
+        "ConfirmRemove": "%s removed from role %s"
+    },
+    "Movies": {
+        "Command": "list movies",
+        "Help": "",
+        "Response": "",
+        "Error": ""
+    }
+}

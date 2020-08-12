@@ -2,6 +2,7 @@ package bot
 
 import (
 	"ACCPostminister/language"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -10,7 +11,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var lang = language.Languages["English"]
+var lang = language.Language{}
 
 func Run(s *discordgo.Session) error {
 	log.Printf("Bot is now running. Hello!\nPress CTRL-C to exit . . .\n")
@@ -24,7 +25,7 @@ func Run(s *discordgo.Session) error {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself, or outside the set botchannel
-	if m.Author.ID == s.State.User.ID || (validChannelID(s, globalIDs.Botchannel) && globalIDs.Botchannel != m.ChannelID) {
+	if m.Author.ID == s.State.User.ID || (validChannelID(s, persistent.Botchannel) && persistent.Botchannel != m.ChannelID) {
 		return
 	}
 
@@ -47,14 +48,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
-		if validMessageID(s, m.ChannelID, globalIDs.User) {
-			err = s.ChannelMessageDelete(m.ChannelID, globalIDs.User)
+		if validMessageID(s, m.ChannelID, persistent.User) {
+			err = s.ChannelMessageDelete(m.ChannelID, persistent.User)
 			if err != nil {
-				log.Printf("while deleting message %s: %v", globalIDs.User, err)
+				log.Printf("while deleting message %s: %v", persistent.User, err)
 			}
 		}
 
-		globalIDs.User = m.ID
+		persistent.User = m.ID
 	}
 }
 
@@ -67,18 +68,48 @@ func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message strin
 }
 
 func messageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
-	if r.MessageID != globalIDs.Role || r.UserID == s.State.User.ID {
+	if r.UserID == s.State.User.ID {
 		return
 	}
 
-	err := rolechange(s, r.MessageReaction, lang.Role.ConfirmAdd)
-	if err != nil {
-		log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
+	if r.MessageID == persistent.LangMSG {
+		err := langchg(s, r)
+		if err != nil {
+			log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
+		}
+	}
+
+	if r.MessageID == persistent.Role {
+		err := rolechange(s, r.MessageReaction, lang.Role.ConfirmAdd)
+		if err != nil {
+			log.Printf("while processing reaction on channel %s: %v", r.ChannelID, err)
+		}
 	}
 }
 
+func langchg(s *discordgo.Session, r *discordgo.MessageReactionAdd) (err error) {
+	persistent.Language = r.MessageReaction.Emoji.Name
+
+	lang, err = language.Load(persistent.Language)
+	if err != nil {
+		return err
+	}
+
+	_, err = confirm(s, r.ChannelID, fmt.Sprintf(lang.Language.ConfirmChange+persistent.Language))
+	if err != nil {
+		return err
+	}
+
+	err = s.ChannelMessageDelete(r.ChannelID, persistent.LangMSG)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func messageReactionRemove(s *discordgo.Session, r *discordgo.MessageReactionRemove) {
-	if r.MessageID != globalIDs.Role || r.UserID == s.State.User.ID {
+	if r.MessageID != persistent.Role || r.UserID == s.State.User.ID {
 		return
 	}
 

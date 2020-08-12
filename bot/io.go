@@ -13,7 +13,7 @@ const (
 	messagefile = "messages.json"
 )
 
-func readFromFile(target interface{}, filename string) error {
+func ReadFromFile(target interface{}, filename string) error {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Printf("Error reading from %s\nContinuing...\n", filename)

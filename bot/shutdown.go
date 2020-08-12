@@ -13,11 +13,11 @@ func Shutdown(s *discordgo.Session) error {
 		return errors.Wrap(err, "while saving roles")
 	}
 
-	err = saveToFile(globalIDs, messagefile)
+	err = saveToFile(persistent, messagefile)
 	if err != nil {
 		return errors.Wrap(err, "while saving message IDs")
 	}
-
+	saveToFile(lang, "english.json")
 	s.Close()
 
 	log.Println("Bot shutdown. Good bye!")

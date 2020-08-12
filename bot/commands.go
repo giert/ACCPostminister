@@ -7,15 +7,20 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var commands = map[string]func(s *discordgo.Session, m *discordgo.MessageCreate) (string, bool){
-	"ping":                       ping,
-	"pong":                       pong,
-	lang.Help.Command:            help,
-	lang.BotChannel.Command:      botChannel,
-	lang.UnsetBotChannel.Command: unsetBotChannel,
-	lang.Cleanse.Command:         cleanse,
-	lang.Movies.Command:          projektør.ListMovies,
-	lang.Role.Command:            role,
+var commands = map[string]func(s *discordgo.Session, m *discordgo.MessageCreate) (string, bool){}
+
+func initCommands() {
+	commands = map[string]func(s *discordgo.Session, m *discordgo.MessageCreate) (string, bool){
+		"ping":                       ping,
+		"pong":                       pong,
+		lang.Help.Command:            help,
+		lang.BotChannel.Command:      botChannel,
+		lang.UnsetBotChannel.Command: unsetBotChannel,
+		lang.Cleanse.Command:         cleanse,
+		lang.Language.Command:        languageChange,
+		lang.Role.Command:            role,
+		lang.Movies.Command:          projektør.ListMovies,
+	}
 }
 
 func ping(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
@@ -39,14 +44,18 @@ func unsetBotChannel(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, 
 }
 
 func cleanse(s *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
-	if !validChannelID(s, globalIDs.Botchannel) {
+	if !validChannelID(s, persistent.Botchannel) {
 		return lang.BotChannel.Error, true
 	}
 	return lang.Cleanse.Response, true
 }
 
+func languageChange(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
+	return lang.Language.Response, false
+}
+
 func role(s *discordgo.Session, m *discordgo.MessageCreate) (string, bool) {
-	if validMessageID(s, m.ChannelID, globalIDs.Role) {
+	if validMessageID(s, m.ChannelID, persistent.Role) {
 		return lang.Role.Error, true
 	}
 
