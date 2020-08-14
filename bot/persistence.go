@@ -85,11 +85,16 @@ func validChannelID(s *discordgo.Session, channelID string) bool {
 }
 
 func isAdmin(u *discordgo.User) bool {
+	if len(persistent.AdminUsers) == 0 {
+		return true
+	}
+
 	for _, a := range persistent.AdminUsers {
 		if a == u.ID {
 			return true
 		}
 	}
+	
 	return false
 }
 
