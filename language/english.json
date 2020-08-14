@@ -1,5 +1,6 @@
 {
     "Reaction": "👌",
+    "AdminReaction": "This is an admin command - you are not an admin!"
     "Help": {
         "Command": "help",
         "Help": "",

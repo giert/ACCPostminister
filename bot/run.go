@@ -35,8 +35,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			log.Printf("while reacting to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 		}
 
-		resp, conf := command(s, m)
-		msg, err := messageSend(s, m, resp, conf)
+		resp, conf, adm := command(s, m)
+		msg, err := messageSend(s, m, resp, conf, adm)
 		if err != nil {
 			log.Printf("while sending response to command %s on channel %s: %v", m.Content, m.ChannelID, err)
 		}
@@ -59,7 +59,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message string, isConfirmation bool) (*discordgo.Message, error) {
+func messageSend(s *discordgo.Session, m *discordgo.MessageCreate, message string, isConfirmation bool, requiresAdmin bool) (*discordgo.Message, error) {
+	if requiresAdmin && !isAdmin(m.Author) {
+		message = lang.AdminError
+		isConfirmation = true
+	}
+
 	if isConfirmation {
 		return confirm(s, m.ChannelID, message)
 	}

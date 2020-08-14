@@ -16,6 +16,7 @@ var Languages = map[string]string{
 
 type Language struct {
 	Reaction        string
+	AdminError      string
 	Help            Feature
 	BotChannel      Feature
 	UnsetBotChannel Feature

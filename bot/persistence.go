@@ -10,6 +10,7 @@ import (
 type persistentData struct {
 	Language     string
 	Botchannel   string
+	AdminUsers   []string
 	Confirmation string
 	User         string
 	Help         string
@@ -21,8 +22,6 @@ var persistent persistentData
 
 func (p persistentData) contains(messageID string) bool {
 	switch messageID {
-	case p.Language:
-		return true
 	case p.Botchannel:
 		return true
 	case p.Confirmation:
@@ -83,6 +82,15 @@ func validMessageID(s *discordgo.Session, channelID, messageID string) bool {
 func validChannelID(s *discordgo.Session, channelID string) bool {
 	ch, err := s.Channel(channelID)
 	return channelID != "" || ch != nil || err == nil
+}
+
+func isAdmin(u *discordgo.User) bool {
+	for _, a := range persistent.AdminUsers {
+		if a == u.ID {
+			return true
+		}
+	}
+	return false
 }
 
 func botchannelHelpMessage(s *discordgo.Session) error {

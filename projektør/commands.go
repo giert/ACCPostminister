@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func ListMovies(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool) {
+func ListMovies(_ *discordgo.Session, _ *discordgo.MessageCreate) (response string, isConfirmation, requiresAdmin bool) {
 	s := datastore.Storage{
 		Data: map[string]datastore.Entry{
 			"Unstoppable":           movie{},
@@ -14,5 +14,5 @@ func ListMovies(_ *discordgo.Session, _ *discordgo.MessageCreate) (string, bool)
 		},
 	}
 
-	return s.ListMovies(), true
+	return s.ListMovies(), true, false
 }
